@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { AddModal } from "./AddModal";
+import { openModal, closeModal } from "../features/modals/addModalSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 const ProgressSection = () => {
   // TODO: Add modal functionaltiy with onAdd prop
@@ -7,11 +10,12 @@ const ProgressSection = () => {
   let isempty = cards.length === 0;
   return (
     <section id="home-a">
+      <AddModal />
       <div className="container">
         <h2 className="section-title">My Journies</h2>
         <div className="divider"></div>
         {isempty ? (
-          <Empty onAdd={() => {}} />
+          <Empty />
         ) : (
           cards.map((card) => (
             <ProgressCard
@@ -35,11 +39,13 @@ const ProgressSection = () => {
   );
 };
 
-const Empty = ({ onAdd }) => {
+const Empty = () => {
+  // * dispatch the openModal action when clicking on the addJourney button
+  const dispatch = useDispatch();
   return (
     <div className="empty">
       <h3>Add a journey to get started!</h3>
-      <button className="btn btn-primary" onClick={onAdd}>
+      <button className="btn btn-primary" onClick={() => dispatch(openModal())}>
         Add journey
       </button>
     </div>
