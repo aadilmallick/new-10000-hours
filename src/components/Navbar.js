@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Navbar = ({ onAbout }) => {
   const linklist = [
     { url: "/", text: "home" },
     { url: "/about", text: "about" },
   ];
+  const { isAuthenticated, isLoading, error, loginWithPopup } = useAuth0();
+
   if (onAbout) {
     return (
       <div className="container">
@@ -45,8 +48,34 @@ const Navbar = ({ onAbout }) => {
             current={link.url === "/"}
           />
         ))}
+        {isLoading && <div className="loading-small"></div>}
+        {!isLoading && <LoginButton />}
+        {!isLoading && <LogoutButton />}
       </ul>
     </nav>
+  );
+};
+
+const LoginButton = () => {
+  const { isAuthenticated, loginWithPopup } = useAuth0();
+  if (isAuthenticated) return null;
+  return (
+    <button className="btn btn-dark" onClick={() => loginWithPopup()}>
+      login
+    </button>
+  );
+};
+
+const LogoutButton = () => {
+  const { isAuthenticated, logout } = useAuth0();
+  if (!isAuthenticated) return null;
+  return (
+    <button
+      className="btn btn-dark"
+      onClick={() => logout({ returnTo: window.location.origin })}
+    >
+      logout
+    </button>
   );
 };
 

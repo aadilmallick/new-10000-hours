@@ -2,7 +2,11 @@ import { Navbar } from "../components/Navbar";
 import { ProgressSection } from "../components/ProgressSection";
 import { useEffect } from "react";
 import { Footer } from "../components/Footer";
+import { AuthWrapper } from "../components/Routes";
+import { useAuth0 } from "@auth0/auth0-react";
+
 const HomeScreen = () => {
+  const { isAuthenticated, isLoading } = useAuth0();
   return (
     <>
       <header id="header-home">
@@ -12,7 +16,7 @@ const HomeScreen = () => {
         </div>
         <div className="spacer red-stacked-layer"></div>
       </header>
-      <ProgressSection />
+      {isAuthenticated && <ProgressSection />}
       <Footer />
     </>
   );
