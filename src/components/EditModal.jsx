@@ -3,7 +3,8 @@ import { useState } from "react";
 import ReactDOM from "react-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { closeEditModal } from "../features/modals/editModalSlice";
-import { editCard } from "../features/cards/cardsSlice";
+import { editCard, editCardFromDatabase } from "../features/cards/cardsSlice";
+
 const EditStuff = ({ id }) => {
   // TODO: edit modal functionality
   const [taskName, setTaskName] = useState("");
@@ -14,15 +15,15 @@ const EditStuff = ({ id }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    const card = {
+      task: taskName,
+      hoursWorked: hours,
+      minutesWorked: minutes,
+      id,
+    };
     dispatch(closeEditModal());
-    dispatch(
-      editCard({
-        task: taskName,
-        hoursWorked: hours,
-        minutesWorked: minutes,
-        id,
-      })
-    );
+    dispatch(editCard({ ...card }));
+    dispatch(editCardFromDatabase({ ...card }));
   };
 
   return (

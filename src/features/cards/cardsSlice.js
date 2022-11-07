@@ -65,6 +65,36 @@ export const deleteCardFromDatabase = createAsyncThunk(
   }
 );
 
+export const editCardFromDatabase = createAsyncThunk(
+  "card/editCardFromDatabase",
+  async (payload, thunkAPI) => {
+    try {
+      console.log(payload);
+      const { id, hoursWorked, minutesWorked } = payload;
+      const username = thunkAPI.getState().user.username;
+      const { firebaseName, card } = await findCardFromId(id, username);
+      card.currentHours +=
+        hoursWorked + Number((minutesWorked / 60).toFixed(1));
+      const response = await axios.put(
+        `${url}/goals/${username}/${firebaseName}.json`,
+        JSON.stringify(card),
+        { headers: { "Content-Type": "application/json" } }
+      );
+      const data = getData(response.data);
+      return data;
+      // const response = await axios.post(
+      //   `${url}goals/${username}.json`,
+      //   JSON.stringify(payload),
+      //   { headers: { "Content-Type": "application/json" } }
+      // );
+      // const data = getData(response.data);
+      // return data;
+    } catch (e) {
+      console.log(e);
+      return thunkAPI.rejectWithValue("something went wrong");
+    }
+  }
+);
 const cardsSlice = createSlice({
   name: "cards",
   initialState,
@@ -125,6 +155,19 @@ const cardsSlice = createSlice({
       state.isLoading = false;
     },
     [deleteCardFromDatabase.rejected]: (state, action) => {
+      console.log(action.payload);
+      state.isLoading = false;
+    },
+    [editCardFromDatabase.pending]: (state) => {
+      console.log("editing in progress...");
+      state.isLoading = true;
+    },
+    [editCardFromDatabase.fulfilled]: (state, action) => {
+      console.log("editing complete");
+      console.log(action.payload);
+      state.isLoading = false;
+    },
+    [editCardFromDatabase.rejected]: (state, action) => {
       console.log(action.payload);
       state.isLoading = false;
     },
