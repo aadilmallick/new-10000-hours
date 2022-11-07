@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { getData } from "./firebaseAPI";
+import { getData, findCardFromId } from "./firebaseAPI";
 const url = "https://hours-896df-default-rtdb.firebaseio.com/";
 
 const initialState = {
@@ -35,6 +35,26 @@ export const postCard = createAsyncThunk(
         `${url}goals/${username}.json`,
         JSON.stringify(payload),
         { headers: { "Content-Type": "application/json" } }
+      );
+      const data = getData(response.data);
+      return data;
+    } catch (e) {
+      console.log(e);
+      return thunkAPI.rejectWithValue("something went wrong");
+    }
+  }
+);
+
+export const deleteCardFromDatabase = createAsyncThunk(
+  "card/deleteCardFromDatabase",
+  async (payload, thunkAPI) => {
+    try {
+      console.log(payload);
+      const id = payload;
+      const username = thunkAPI.getState().user.username;
+      const { firebaseName } = await findCardFromId(id, username);
+      const response = await axios.delete(
+        `${url}/goals/${username}/${firebaseName}.json`
       );
       const data = getData(response.data);
       return data;
@@ -92,6 +112,19 @@ const cardsSlice = createSlice({
       state.isLoading = false;
     },
     [postCard.rejected]: (state, action) => {
+      console.log(action.payload);
+      state.isLoading = false;
+    },
+    [deleteCardFromDatabase.pending]: (state) => {
+      console.log("deleting in progress...");
+      state.isLoading = true;
+    },
+    [deleteCardFromDatabase.fulfilled]: (state, action) => {
+      console.log("deleting complete");
+      console.log(action.payload);
+      state.isLoading = false;
+    },
+    [deleteCardFromDatabase.rejected]: (state, action) => {
       console.log(action.payload);
       state.isLoading = false;
     },

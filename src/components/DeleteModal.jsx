@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { closeDeleteModal } from "../features/modals/deleteModalSlice";
 import { deleteCard } from "../features/cards/cardsSlice";
+import { deleteCardFromDatabase } from "../features/cards/cardsSlice";
 
 const DeleteStuff = ({ id }) => {
   // TODO: delete modal functionality
@@ -12,6 +13,7 @@ const DeleteStuff = ({ id }) => {
   const onDelete = () => {
     dispatch(closeDeleteModal());
     dispatch(deleteCard(id));
+    dispatch(deleteCardFromDatabase(id));
   };
 
   return (
