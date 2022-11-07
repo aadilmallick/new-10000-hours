@@ -22,8 +22,12 @@ const cardsSlice = createSlice({
         return { ...card };
       });
     },
+    deleteCard: (state, action) => {
+      const id = action.payload;
+      state.cards = state.cards.filter((card) => card.id !== id);
+    },
   },
 });
 
 export const cardsReducer = cardsSlice.reducer;
-export const { addCard, editCard } = cardsSlice.actions;
+export const { addCard, editCard, deleteCard } = cardsSlice.actions;

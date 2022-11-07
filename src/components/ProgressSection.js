@@ -4,7 +4,8 @@ import { openModal, closeModal } from "../features/modals/addModalSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { EditModal } from "./EditModal";
 import { openEditModal } from "../features/modals/editModalSlice";
-
+import { DeleteModal } from "./DeleteModal";
+import { openDeleteModal } from "../features/modals/deleteModalSlice";
 const ProgressSection = () => {
   // TODO: card fetching
   const { cards, isLoading } = useSelector((store) => store.cards);
@@ -82,6 +83,7 @@ const ProgressCard = ({ title, currentHours, goalHours, id }) => {
   return (
     <>
       <EditModal id={id} />
+      <DeleteModal id={id} />
       <div className="card">
         <div className="titles">
           <h3 className="card-title">{title}</h3>
@@ -98,7 +100,10 @@ const ProgressCard = ({ title, currentHours, goalHours, id }) => {
             Edit
           </button>
           {/* * Todo: add delete functionality */}
-          <button className="btn btn-dark" onClick={() => {}}>
+          <button
+            className="btn btn-dark"
+            onClick={() => dispatch(openDeleteModal())}
+          >
             Delete
           </button>
         </div>
