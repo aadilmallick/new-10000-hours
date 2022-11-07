@@ -23,6 +23,28 @@ export const fetchCards = createAsyncThunk(
   }
 );
 
+export const postCard = createAsyncThunk(
+  "card/postCard",
+  async (payload, thunkAPI) => {
+    try {
+      console.log(payload);
+
+      const username = thunkAPI.getState().user.username;
+
+      const response = await axios.post(
+        `${url}goals/${username}.json`,
+        JSON.stringify(payload),
+        { headers: { "Content-Type": "application/json" } }
+      );
+      const data = getData(response.data);
+      return data;
+    } catch (e) {
+      console.log(e);
+      return thunkAPI.rejectWithValue("something went wrong");
+    }
+  }
+);
+
 const cardsSlice = createSlice({
   name: "cards",
   initialState,
@@ -57,6 +79,19 @@ const cardsSlice = createSlice({
       state.isLoading = false;
     },
     [fetchCards.rejected]: (state, action) => {
+      console.log(action.payload);
+      state.isLoading = false;
+    },
+    [postCard.pending]: (state) => {
+      console.log("posting in progress...");
+      state.isLoading = true;
+    },
+    [postCard.fulfilled]: (state, action) => {
+      console.log("posting complete");
+      console.log(action.payload);
+      state.isLoading = false;
+    },
+    [postCard.rejected]: (state, action) => {
       console.log(action.payload);
       state.isLoading = false;
     },

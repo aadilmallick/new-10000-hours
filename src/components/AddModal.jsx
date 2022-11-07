@@ -3,7 +3,7 @@ import { useState } from "react";
 import ReactDOM from "react-dom";
 import { openModal, closeModal } from "../features/modals/addModalSlice";
 import { useSelector, useDispatch } from "react-redux";
-import { addCard } from "../features/cards/cardsSlice";
+import { addCard, postCard } from "../features/cards/cardsSlice";
 import { v4 as uuidv4 } from "uuid";
 
 const AddStuff = () => {
@@ -18,16 +18,15 @@ const AddStuff = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-
+    const card = {
+      title: formstate.title,
+      currentHours: formstate.initHours,
+      goalHours: formstate.goalHours,
+      id: uuidv4(),
+    };
     dispatch(closeModal());
-    dispatch(
-      addCard({
-        title: formstate.title,
-        currentHours: formstate.initHours,
-        goalHours: formstate.goalHours,
-        id: uuidv4(),
-      })
-    );
+    dispatch(addCard({ ...card }));
+    dispatch(postCard({ ...card }));
   };
   return (
     <>
