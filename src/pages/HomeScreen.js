@@ -4,9 +4,15 @@ import { useEffect } from "react";
 import { Footer } from "../components/Footer";
 import { AuthWrapper } from "../components/Routes";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useDispatch } from "react-redux";
+import { setUser } from "../features/user/userSlice";
 
 const HomeScreen = () => {
-  const { isAuthenticated, isLoading } = useAuth0();
+  const { isAuthenticated, isLoading, user } = useAuth0();
+  const dispatch = useDispatch();
+  if (isAuthenticated) {
+    dispatch(setUser({ ...user }));
+  }
   return (
     <>
       <header id="header-home">

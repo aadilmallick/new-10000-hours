@@ -7,14 +7,18 @@ import { openEditModal } from "../features/modals/editModalSlice";
 import { DeleteModal } from "./DeleteModal";
 import { openDeleteModal } from "../features/modals/deleteModalSlice";
 import { useAuth0 } from "@auth0/auth0-react";
+import { fetchCards } from "../features/cards/cardsSlice";
 
 const ProgressSection = () => {
   // TODO: card fetching
   const { user } = useAuth0();
-  console.log(user);
   const { cards, isLoading } = useSelector((store) => store.cards);
   const dispatch = useDispatch();
   let isempty = cards.length === 0;
+
+  React.useEffect(() => {
+    dispatch(fetchCards());
+  }, []);
 
   if (isLoading) {
     return (
