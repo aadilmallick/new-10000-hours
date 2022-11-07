@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 import { openModal, closeModal } from "../features/modals/addModalSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { addCard } from "../features/cards/cardsSlice";
+import { v4 as uuidv4 } from "uuid";
 
 const AddStuff = () => {
   //  TODO: add modal functionality, control inputs, submit form
@@ -17,9 +18,16 @@ const AddStuff = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    const { title, initHours, goalHours } = formstate;
-    dispatch(addCard({ title, initHours, goalHours }));
+
     dispatch(closeModal());
+    dispatch(
+      addCard({
+        title: formstate.title,
+        currentHours: formstate.initHours,
+        goalHours: formstate.goalHours,
+        id: uuidv4(),
+      })
+    );
   };
   return (
     <>

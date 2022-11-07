@@ -2,38 +2,61 @@ import React, { useState } from "react";
 import { AddModal } from "./AddModal";
 import { openModal, closeModal } from "../features/modals/addModalSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { EditModal } from "./EditModal";
+import { openEditModal } from "../features/modals/editModalSlice";
 
 const ProgressSection = () => {
-  // TODO: Add modal functionaltiy with onAdd prop
   // TODO: card fetching
-  const cards = [];
+  const { cards, isLoading } = useSelector((store) => store.cards);
+  const dispatch = useDispatch();
   let isempty = cards.length === 0;
+
+  if (isLoading) {
+    return (
+      <Section>
+        <div className="loading"></div>
+      </Section>
+    );
+  }
+  if (isempty) {
+    return (
+      <Section>
+        <Empty />
+      </Section>
+    );
+  }
+
+  return (
+    <Section>
+      {cards.map((card) => (
+        <ProgressCard
+          title={card.title}
+          currentHours={card.currentHours}
+          goalHours={card.goalHours}
+          id={card.id}
+          key={card.id}
+        />
+      ))}
+      <div className="empty">
+        <button
+          className="btn btn-primary"
+          onClick={() => dispatch(openModal())}
+        >
+          Add journey
+        </button>
+      </div>
+    </Section>
+  );
+};
+
+const Section = ({ children }) => {
   return (
     <section id="home-a">
       <AddModal />
       <div className="container">
         <h2 className="section-title">My Journies</h2>
         <div className="divider"></div>
-        {isempty ? (
-          <Empty />
-        ) : (
-          cards.map((card) => (
-            <ProgressCard
-              title={card.title}
-              currentHours={card.currentHours}
-              goalHours={card.goalHours}
-              id={card.id}
-              key={card.id}
-            />
-          ))
-        )}
-        {!isempty && (
-          <div className="empty">
-            <button className="btn btn-primary" onClick={() => {}}>
-              Add journey
-            </button>
-          </div>
-        )}
+        {children}
       </div>
     </section>
   );
@@ -54,8 +77,11 @@ const Empty = () => {
 
 const ProgressCard = ({ title, currentHours, goalHours, id }) => {
   // TODO: Add edit modal functionality, add delete functionality.
+
+  const dispatch = useDispatch();
   return (
     <>
+      <EditModal id={id} />
       <div className="card">
         <div className="titles">
           <h3 className="card-title">{title}</h3>
@@ -65,7 +91,10 @@ const ProgressCard = ({ title, currentHours, goalHours, id }) => {
         </div>
         <ProgressBar currentHours={currentHours} goalHours={goalHours} />
         <div className="buttons">
-          <button className="btn btn-primary" onClick={() => {}}>
+          <button
+            className="btn btn-primary"
+            onClick={() => dispatch(openEditModal())}
+          >
             Edit
           </button>
           {/* * Todo: add delete functionality */}
