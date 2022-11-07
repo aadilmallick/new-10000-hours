@@ -9,6 +9,7 @@ const DeleteStuff = ({ id }) => {
   // TODO: delete modal functionality
 
   const dispatch = useDispatch();
+  console.log("delete modal", id);
 
   const onDelete = () => {
     dispatch(closeDeleteModal());

@@ -86,11 +86,16 @@ const Empty = () => {
 
 const ProgressCard = ({ title, currentHours, goalHours, id }) => {
   // TODO: Add edit modal functionality, add delete functionality.
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const dispatch = useDispatch();
   return (
     <>
-      <EditModal id={id} />
+      <EditModal
+        cardId={id}
+        isEditModalOpen={isEditModalOpen}
+        onCloseModal={() => setIsEditModalOpen(false)}
+      />
       <DeleteModal id={id} />
       <div className="card">
         <div className="titles">
@@ -103,7 +108,7 @@ const ProgressCard = ({ title, currentHours, goalHours, id }) => {
         <div className="buttons">
           <button
             className="btn btn-primary"
-            onClick={() => dispatch(openEditModal())}
+            onClick={() => setIsEditModalOpen(true)}
           >
             Edit
           </button>

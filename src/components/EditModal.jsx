@@ -5,7 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { closeEditModal } from "../features/modals/editModalSlice";
 import { editCard, editCardFromDatabase } from "../features/cards/cardsSlice";
 
-const EditStuff = ({ id }) => {
+const EditStuff = ({ cardId, onCloseModal }) => {
+  console.log("edit mdoal");
   // TODO: edit modal functionality
   const [taskName, setTaskName] = useState("");
   const [hours, setHours] = useState(0);
@@ -15,13 +16,14 @@ const EditStuff = ({ id }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    console.log(cardId);
     const card = {
       task: taskName,
       hoursWorked: hours,
       minutesWorked: minutes,
-      id,
+      id: cardId,
     };
-    dispatch(closeEditModal());
+    onCloseModal();
     dispatch(editCard({ ...card }));
     dispatch(editCardFromDatabase({ ...card }));
   };
@@ -32,7 +34,7 @@ const EditStuff = ({ id }) => {
       <div className="modal edit-modal text-center">
         <i
           className="fas fa-times exit-icon"
-          onClick={() => dispatch(closeEditModal())}
+          onClick={() => onCloseModal()}
         ></i>
         <h1>Add Hours</h1>
         <form onSubmit={submitHandler}>
@@ -73,15 +75,15 @@ const EditStuff = ({ id }) => {
   );
 };
 
-const EditModal = ({ id }) => {
+const EditModal = ({ cardId, onCloseModal, isEditModalOpen }) => {
   //TODO: render edit modal, return null if not open
-  const isOpen = useSelector((store) => store.editModal.isOpen);
-
-  if (!isOpen) return null;
+  if (!isEditModalOpen) {
+    return null;
+  }
   return (
     <>
       {ReactDOM.createPortal(
-        <EditStuff id={id} />,
+        <EditStuff cardId={cardId} onCloseModal={onCloseModal} />,
         document.querySelector("#overlay-root")
       )}
     </>

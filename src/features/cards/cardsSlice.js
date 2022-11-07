@@ -103,6 +103,7 @@ const cardsSlice = createSlice({
       state.cards.push({ ...action.payload });
     },
     editCard: (state, action) => {
+      console.log(action.payload);
       const { id, hoursWorked, minutesWorked, task } = action.payload;
       state.cards = state.cards.map((card) => {
         if (card.id === id) {
